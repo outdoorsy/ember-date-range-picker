@@ -75,7 +75,8 @@ export default Ember.Component.extend({
   firstDay: 0,
   isInvalidDate: noop,
   isCustomDate: noop,
-
+  context: undefined,
+  
   // Init the dropdown when the component is added to the DOM
   didInsertElement() {
     this._super(...arguments);
@@ -152,6 +153,8 @@ export default Ember.Component.extend({
       endDate: endDate,
       minDate: minDate,
       maxDate: maxDate,
+      isInvalidDate: this.isInvalidDate.bind(this.context),
+      isCustomDate: this.isCustomDate.bind(this.context),
     };
 
     if (!this.get('singleDatePicker')) {
