@@ -31,7 +31,12 @@ module.exports = {
       })
     });
 
-    browserVendorLib = map(browserVendorLib, (content) => `if (typeof FastBoot === 'undefined') { ${content} }`);
+    browserVendorLib = map(browserVendorLib, (content, relativePath) => {
+      if (relativePath.indexOf('css') !== -1) {
+        return content;
+      }
+      return `if (typeof FastBoot === 'undefined') { ${content} }`
+    });
   
     return new mergeTrees([defaultTree, browserVendorLib]);
   }
