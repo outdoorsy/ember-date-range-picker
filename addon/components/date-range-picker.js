@@ -5,8 +5,7 @@ import layout from '../templates/components/date-range-picker';
 const {
   run,
   isEmpty,
-  computed,
-  keys
+  computed
 } = Ember;
 
 const noop = function() {};
@@ -204,7 +203,7 @@ export default Ember.Component.extend({
         `${actionName} for date-range-picker must be a function`,
         typeof action === 'function'
       );
-      let attrsArray = keys(attrs).map((v) => attrs[v]);
+      let attrsArray = Object.keys(attrs).map((v) => attrs[v]);
       this.sendAction(actionName, ...attrsArray);
     } else {
       if (!this.isDestroyed) {
