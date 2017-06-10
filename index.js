@@ -1,9 +1,11 @@
 /* jshint node: true */
 'use strict';
+var path = require('path');
+
 var Funnel = require('broccoli-funnel');
 var mergeTrees = require('broccoli-merge-trees');
-var path = require('path');
-var map = require('broccoli-stew').map;
+var fbTransform = require('fastboot-transform');
+
 
 module.exports = {
   name: 'ember-cli-daterangepicker',
@@ -15,12 +17,18 @@ module.exports = {
     this.app.import('vendor/bootstrap-daterangepicker/daterangepicker.css');
   },
 
-  treeForVendor: function(defaultTree) {
+  treeForVendor: function(vendorTree) {
+    var trees = [];
     var daterangepickerPath = path.dirname(require.resolve('bootstrap-daterangepicker'));
 
-    var browserVendorLib = new Funnel(daterangepickerPath, {
+    if (vendorTree) {
+      trees.push(vendorTree);
+    }
+
+    //need to wrap with check if it's inside fastboot environment
+    trees.push(fbTransform(new Funnel(daterangepickerPath, {
       destDir: 'bootstrap-daterangepicker',
-      include: [new RegExp(/\.js$|\.css/)],
+      include: [new RegExp(/\.js$/)],
       exclude: [
         'moment',
         'moment.min',
@@ -29,15 +37,12 @@ module.exports = {
       ].map(function(key) {
         return new RegExp(key + '\.js$');
       })
-    });
+    })));
+    trees.push(new Funnel(daterangepickerPath, {
+      destDir: 'bootstrap-daterangepicker',
+      include: [new RegExp(/\.css$/)]
+    }));
 
-    browserVendorLib = map(browserVendorLib, (content, relativePath) => {
-      if (relativePath.indexOf('css') !== -1) {
-        return content;
-      }
-      return `if (typeof FastBoot === 'undefined') { ${content} }`
-    });
-  
-    return new mergeTrees([defaultTree, browserVendorLib]);
+    return mergeTrees(trees);
   }
 };
