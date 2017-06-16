@@ -8,7 +8,12 @@
   "scripts": {
     "start": "ember server",
     "build": "ember build",
-    "test": "ember try:testall"
+    "test": "ember try:testall",
+    "deploy": "yarn version:patch && yarn push:git",
+    "deploy:ci": "yarn version:patchCI && yarn push:git",
+    "version:patch": "npm version patch",
+    "version:patchCI": "npm version patch -m 'CI deploy so [skip ci]'",
+    "push:git": "git push --tags origin HEAD:master"
   },
   "engines": {
     "node": ">= 0.10.0"
