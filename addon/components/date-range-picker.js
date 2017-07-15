@@ -76,7 +76,7 @@ export default Ember.Component.extend({
   isInvalidDate: noop,
   isCustomDate: noop,
   context: undefined,
-  
+
   // Init the dropdown when the component is added to the DOM
   didInsertElement() {
     this._super(...arguments);
@@ -190,12 +190,12 @@ export default Ember.Component.extend({
 
   handleDateRangePickerEvent(actionName, picker, isCancel = false) {
     let action = this.get(actionName);
-    let attrs = {};
+    let start;
+    let end;
 
     if (!isCancel) {
-      let start = picker.startDate.format(this.get('serverFormat'));
-      let end = picker.endDate.format(this.get('serverFormat'));
-      attrs = { start, end };
+      start = picker.startDate.format(this.get('serverFormat'));
+      end = picker.endDate.format(this.get('serverFormat'));
     }
 
     if (action) {
@@ -207,7 +207,7 @@ export default Ember.Component.extend({
       this.sendAction(actionName, ...attrsArray);
     } else {
       if (!this.isDestroyed) {
-        this.setProperties(attrs);
+        this.setProperties({ start, end });
       }
     }
   }
