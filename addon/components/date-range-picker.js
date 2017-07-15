@@ -85,7 +85,9 @@ export default Ember.Component.extend({
 
   didUpdateAttrs() {
     this._super(...arguments);
-    this.setupPicker();
+    if (typeof(FastBoot) === 'undefined') {
+      this.setupPicker();
+    }
   },
 
   // Remove the hidden dropdown when this component is destroyed
@@ -192,10 +194,11 @@ export default Ember.Component.extend({
     let action = this.get(actionName);
     let start;
     let end;
-
+    let attrs = {};
     if (!isCancel) {
       start = picker.startDate.format(this.get('serverFormat'));
       end = picker.endDate.format(this.get('serverFormat'));
+      attrs = {start, end}
     }
 
     if (action) {
